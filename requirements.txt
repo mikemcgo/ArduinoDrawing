@@ -1,0 +1,13 @@
+Django==1.10.1
+image==1.5.4
+numpy==1.11.1
+Pillow==3.3.1
+PyAutoGUI==0.9.33
+PyMsgBox==1.0.3
+pyobjc-core==3.1.1
+pyobjc-framework-Cocoa==3.1.1
+pyobjc-framework-Quartz==3.1.1
+PyScreeze==0.1.8
+pyserial==3.1.1
+PyTweening==1.0.3
+scipy==0.18.1

@@ -1,31 +1,24 @@
 import serial
-import time
-import pyautogui
+import scipy
+from scipy import *
+import scipy.ndimage
+
 
 # Open serial connection
 ser = serial.Serial('/dev/cu.usbserial-DN01JC0B')
+img = scipy.ndimage.imread('diag.png', flatten=True)
 
-while True:
-	# Record cursor location every two seconds
-	time.sleep(2);
-	raw = pyautogui.position();
+count = 0
 
-	# Convert data to a string
-	data = str(raw[0]) + "," + str(raw[1]) + ";"
+for y in range(len(img)):
+	for x in range(len(img[0])):
+		if img[y][x] == 0:
+			data = str(x) + "," + str(y) + ";"
 
-	# Exit if in the top left
-	exit = (0,0)
+			# Encode the data to byte form
+			ser.write(data.encode());
 
-	# Look for exit condition
-	if data == exit:
-		break;
+			count +=1
+print(count)
 
-	# Encode the data to byte form
-	ser.write(data.encode());
 
-	# Delay a bit between sending data
-	time.sleep(.05)
-
-	# Listen for returning data
-	while ser.inWaiting() > 0:
-		print(ser.readline());
