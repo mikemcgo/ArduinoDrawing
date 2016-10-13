@@ -2,23 +2,29 @@ import serial
 import scipy
 from scipy import *
 import scipy.ndimage
+import re
 
 
 # Open serial connection
 ser = serial.Serial('/dev/cu.usbserial-DN01JC0B')
-img = scipy.ndimage.imread('diag.png', flatten=True)
+img = scipy.ndimage.imread('half.png', flatten=True)
+non_decimal = re.compile(r'[^\d.]+')
 
-count = 0
+print(img[0][0])
 
-for y in range(len(img)):
-	for x in range(len(img[0])):
-		if img[y][x] == 0:
-			data = str(x) + "," + str(y) + ";"
-
-			# Encode the data to byte form
-			ser.write(data.encode());
-
-			count +=1
-print(count)
-
-
+while True:
+	while(ser.inWaiting() > 0):
+		try:
+			incoming = str(ser.readline())
+			incoming = incoming.split(",")
+			x = re.sub("[^0-9]", "", incoming[0])
+			y = re.sub("[^0-9]", "", incoming[1])
+			print(img[int(y)][int(x)])
+			if img[int(y)][int(x)] == int(0.0):
+				print('1')
+				ser.write('1'.encode())
+			else:
+				print('0')
+				ser.write('0'.encode())
+		except IndexError:
+			print('nope')
