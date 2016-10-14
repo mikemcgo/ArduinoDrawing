@@ -1,25 +1,24 @@
 import serial
+import scipy
+from scipy import *
+import scipy.ndimage
 import re
-
 
 # Open serial connection
 ser = serial.Serial('/dev/cu.usbserial-DN01JC0B')
+img = scipy.ndimage.imread('half.png', flatten=True)
+non_decimal = re.compile(r'[^\d.]+')
+
+print(img[0][0])
 
 while True:
-	while ser.inWaiting() > 0:
-		val = ser.readline()
-		non_decimal = re.compile(r'[^\d.]+')
-		value = non_decimal.sub('', str(val))
-		print(value)
-		# if int(value) >= 400:
-		# 	ser.write('1'.encode())
-		# else:
-		# 	ser.write('0'.encode())
-	# data = input("1 or 0")
-
-	# if data == "quit":
-	# 	break
-
-	# # Encode the data to byte form
-	# ser.write(data.encode());
-
+	while(ser.inWaiting() > 0):
+		try:
+			incoming = str(ser.readline())
+			incoming = incoming.split(",")
+			x = re.sub("[^0-9]", "", incoming[0])
+			y = re.sub("[^0-9]", "", incoming[1])
+			z = int(x)
+			print(len(x))
+		except:
+			print('nope')
